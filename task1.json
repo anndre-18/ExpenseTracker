@@ -1,0 +1,49 @@
+[
+  {
+    "name": "Saranyadevi",
+    "rollNo": "23CS145",
+    "dept": "CSE",
+    "dob": "2004-09-08"
+  },
+  {
+    "name": "Shreenithi",
+    "rollNo": "23CS155",
+    "dept": "ECE",
+    "dob": "2005-02-02"
+  },
+  {
+    "name": "Subhashini",
+    "rollNo": "23CS165",
+    "dept": "CSE",
+    "dob": "2005-10-02"
+  },
+  {
+    "name": "Sudha",
+    "rollNo": "23CS167",
+    "dept": "CSE",
+    "dob": "2005-01-01"
+  },
+  {
+    "name": "Visalini",
+    "rollNo": "23CS315",
+    "dept": "CSE",
+    "dob": "2005-06-01"
+  },
+  {
+    "name": "Sherrlyn",
+    "rollNo": "23CS153",
+    "dept": "CSE",
+    "dob": "2005-01-01"
+  },
+ {
+   "name": "Johnathan Doe",
+    "rollNo": "202301",
+    "dept": "IT",
+    "dob": "2003-01-01"
+  },
+ {  "name": "Reethika",
+    "rollNo": "202301",
+    "dept": "CSE",
+    "dob": "2003-01-01"
+  }
+]
