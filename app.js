@@ -1,88 +1,134 @@
-const express=require('express')
-const mongoose=require("mongoose")
-const app=express()
-app.use(express.json)
-const { v4 : uuidv4 } = require ('uuid');
+const express = require("express");
+const mongoose = require("mongoose");
+const app = express();
+const { v4 : uuidv4 } = require('uuid') ;
 
 
-//returns a promise
-//conn establish => promise resolves else throws error
-mongoose.connect("mongodb+srv://anndre-18:sherrlyn31@cluster0.5afem.mongodb.net/").then(()=>{
+app.use(express.json());//express middleware for POST method
+
+//connect backend with database
+mongoose.connect("mongodb+srv://anndre-18:sherrlyn31@cluster0.5afem.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")//returns a promise
+.then(()=>{
     console.log("Connected to MongoDB")
-}) 
-
-const expenseSchema = new mongoose.Schema({
-    id:{type:String , required:true},
-    title:{type:String , required:true},
-    amount:{type:Number , required:true},
 })
 
-const Expenses =mongoose.model("Expense",expenseSchema)
 
+//creating a schema for DB
+const expenseSchema = new mongoose.Schema({
+    id:{type:String,required:true,unique:true},
+    title:{type:String,required:true},
+    amount:{type:Number,required:true},
+});
+//creating a model
+const Expense = mongoose.model("Expense",expenseSchema);
+
+//GET method - to get all data
+app.get("/api/expenses",async(req,res)=>{
+    try{
+
+        const expenses = await Expense.find();
+if(!expenses){
+    res.status(404).send({message: "No expenses found"});
+}
+res.status(200).json(expenses);
+    }
+    catch(error){
+        res.status(500).json({message:"Internal server error"});
+    }
+});
 
 //to get one data
 app.get("/api/expenses/:id",async(req,res)=>{
-    try{
     const {id} = req.params;
-    const expenses = await Expense.findOne({id:id});
+    try{
+
+        const expenses = await Expense.findOne({id:id});
     if(!expenses){
         res.status(404).send({message: "No expenses found"});
         return;
-
     }
     res.status(200).json(expenses);
-    }catch (error){
-        res.status(500).json({})
-    }
-    });
+}
+catch(error){
+    res.status(500).json({message:"Internal server error"});}
+  });
+    
+    
 
 
-app.post('/api/expenses',async (req,res)=>{  // same Router for get and post => '/api/expenses'
-    const {title,amount}= req.body;
+
+
+
+
+// const expenses = [
+//   {
+//     id: 1,
+//     title: "Food",
+//     amount: 200,
+//   },
+//   {
+//     id: 2,
+//     title: "Recharge",
+//     amount: 500,
+//   },
+// ];
+
+// app.get('/api/expenses' , (req,res)=>{
+//     res.status(200).json(expenses);
+// });
+
+// app.get("/api/expenses", (req, res) => {
+//   console.log(req.query);
+//   res.status(200).json(expenses);
+// });
+
+// // get - parameter(used for getting single data,only one data is sent) -> '/:' , query(to get multiple data,multiple data is sent)-> '?'
+// app.get("/api/expenses/:id", (req, res) => {
+//   const { id } = req.params; //destructuring
+//   // console.log(id)
+//   const expense = expenses.find((expense) => expense.id == id);
+//   if (!expense) {
+//     res.status(404).json({ message: "Not found" });
+//     return;
+//   }
+//   res.status(200).json(expense);
+// });
+
+// POST METHOD
+app.post("/api/expenses", async(req, res) => {
+//   console.log(req.body); //request must be parsed for which we use middleware -> parse the data which comes from the client and then it is sent to the server
+const {title,amount} = req.body;
+try{
     if(!title || !amount){
-        res.status(400).json({message : "Please provide both title and amount"})
+        res.status(400).json({message:"please provide both title and amount"});
     }
-
-    const newExpense = new Expense ({
+    
+    const newExpense = new Expense({
         id:uuidv4(),
-        title:title,
-        amount:amount
+        title:title, //if both key and value are same give only once (title)
+        amount
     })
-    const savedExpense = await newExpense.save();
-    res.status(201).json(savedExpense)
-    res.end()
+      const savedExpense = await newExpense.save()
+      res.status(201).json(savedExpense);
+    //   res.end();
+
+}
+catch(error){
+    res.status(500).json({message:"Internal server error"});}
+
 });
 
-
-app.put('/api/expenses', async (req, res) => {
-    try {
-        const { id, title, amount } = req.body; 
-        if (!id || !title || !amount) {
-            return res.status(400).json({ message: "Please provide id, title, and amount" });
-        }
-        const updatedExpense = await Expense.findOneAndUpdate(
-            { id: id }, 
-            { title: title, amount: amount }, 
-            { new: true } 
-        );
-        if (!updatedExpense) {
-            return res.status(404).json({ message: "Expense not found" });
-        }
-        res.status(200).json(updatedExpense);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "An error occurred while updating the expense" });
-    }
-});
-
+//Delete
 app.delete("/api/expenses/:id",async(req,res)=>{
     const {id} = req.params;
     try{
         const deletedExpense = await Expense.findOneAndDelete({id:id})
+    
         if(!deletedExpense){
             res.status(404).json({message:"Expense not found"})
             return
         }
+        console.log(deletedExpense);
         res.status(200).json({message:"Deleted successfully"});
     }catch(error){
         res.status(500).json({message:"Internal server error"});
@@ -90,6 +136,28 @@ app.delete("/api/expenses/:id",async(req,res)=>{
 });
 
 
-app.listen(3000,()=>{
-    console.log("server is running");
+// PUT Route using findOneAndUpdate
+app.put("/api/expenses/:id", async (req, res) => {
+    const { id } = req.params; 
+    const { title, amount } = req.body; 
+  
+    try {
+      const updatedExpense = await Expense.findOneAndUpdate(
+        { id: id }, 
+        { title, amount }, 
+        { new:true} 
+      );
+  
+      if (!updatedExpense) {
+        return res.status(404).json({ message: "Expense not found" });
+      }
+      res.status(200).json(updatedExpense); 
+    } catch (error) {
+      res.status(500).json({ message: "Internal Server Error", error: error.message });
+    }
+  });
+
+
+app.listen(3000, () => {
+  console.log("server is running");
 });
