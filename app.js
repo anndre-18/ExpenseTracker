@@ -7,7 +7,7 @@ const { v4 : uuidv4 } = require ('uuid');
 
 //returns a promise
 //conn establish => promise resolves else throws error
-mongoose.connect("mongodb://localhost:27017/expenses").then(()=>{
+mongoose.connect("mongodb+srv://anndre-18:<sherrlyn_31>@cluster0.5afem.mongodb.net/expenses").then(()=>{
     console.log("Connected to MongoDB")
 }) 
 
