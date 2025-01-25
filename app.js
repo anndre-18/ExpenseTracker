@@ -6,7 +6,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 const cors = require("cors")
-const authMiddleware = require("./auth");
+// const authMiddleware = require("./auth");
 
 
 app.use(express.json());//express middleware for POST method
