@@ -60,7 +60,7 @@ app.get("/api/expenses",async(req,res)=>{
 });
 
 //to get one data
-app.get("/api/expenses/:id", authMiddleware, async(req,res)=>{
+app.get("/api/expenses/:id", async(req,res)=>{
     const {id} = req.params;
     try{
 
