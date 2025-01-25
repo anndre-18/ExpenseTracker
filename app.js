@@ -44,7 +44,7 @@ const expenseSchema = new mongoose.Schema({
 const Expense = mongoose.model("Expense",expenseSchema);
 
 //GET method - to get all data
-app.get("/api/expenses",authMiddleware,async(req,res)=>{
+app.get("/api/expenses",async(req,res)=>{
     console.log(req.user)
     try{
         //await ensures that find operation is executed completely
