@@ -51,6 +51,7 @@ app.get("/api/expenses",async(req,res)=>{
         const expenses = await Expense.find();
         if(!expenses){
             res.status(404).send({message: "No expenses found"});
+            return
         }
         res.status(200).json(expenses);
     }
@@ -76,18 +77,7 @@ catch(error){
   });
     
 
-// const expenses = [
-//   {
-//     id: 1,
-//     title: "Food",
-//     amount: 200,
-//   },
-//   {
-//     id: 2,
-//     title: "Recharge",
-//     amount: 500,
-//   },
-// ];
+
 
 // app.get('/api/expenses' , (req,res)=>{
 //     res.status(200).json(expenses);
